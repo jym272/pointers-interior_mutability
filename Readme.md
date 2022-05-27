@@ -12,3 +12,8 @@ Cell -> no reference to what's inside a cell, It can be replaced, changed, copy,
 -> multiple shared ref to a cell. -> but is sigle threaded, one ref at a time. No support for multithreading. -> sync
 -> get the values -> only through copy
 
+->run test: fn bad_2 and nocapture allow to print to stdout
+
+`
+cargo t  --lib bad_2 -- --nocapture
+`
