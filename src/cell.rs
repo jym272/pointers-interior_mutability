@@ -48,6 +48,7 @@ mod tests {
         let x = Arc::new(Cell::new(0));
 
         let x_copy_1 = Arc::clone(&x);
+        //line 10
         let thread_1 = spawn(move || {
             for _ in 0..100000 {
                 let x = x_copy_1.get();
@@ -64,6 +65,9 @@ mod tests {
         });
         thread_2.join().unwrap();
         thread_1.join().unwrap();
+        //the threads starts to race, some of the modifications end up being lost
+        //both threads write before read again
+        //cargo t --lib bad_cell
         assert_eq!(x.get(), 100000 * 2);
     }
 
