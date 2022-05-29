@@ -41,35 +41,35 @@ mod tests {
 
     //two ref to the same cell and different threads can mutate the same cell using set
     //at the same time, what is the value of the cell? --> NOT OK!
-    #[test]
-    fn bad_cell() {
-        use std::sync::Arc;
-        use std::thread::spawn;
-        let x = Arc::new(Cell::new(0));
-
-        let x_copy_1 = Arc::clone(&x);
-        //line 10
-        let thread_1 = spawn(move || {
-            for _ in 0..100000 {
-                let x = x_copy_1.get();
-                x_copy_1.set(x + 1);
-            }
-        });
-
-        let x_copy_2 = Arc::clone(&x);
-        let thread_2 = spawn(move || {
-            for _ in 0..100000 {
-                let x = x_copy_2.get();
-                x_copy_2.set(x + 1);
-            }
-        });
-        thread_2.join().unwrap();
-        thread_1.join().unwrap();
-        //the threads starts to race, some of the modifications end up being lost
-        //both threads write before read again
-        //cargo t --lib bad_cell
-        assert_eq!(x.get(), 100000 * 2);
-    }
+    // #[test]
+    // fn bad_cell() {
+    //     use std::sync::Arc;
+    //     use std::thread::spawn;
+    //     let x = Arc::new(Cell::new(0));
+    //
+    //     let x_copy_1 = Arc::clone(&x);
+    //     //line 10
+    //     let thread_1 = spawn(move || {
+    //         for _ in 0..100000 {
+    //             let x = x_copy_1.get();
+    //             x_copy_1.set(x + 1);
+    //         }
+    //     });
+    //
+    //     let x_copy_2 = Arc::clone(&x);
+    //     let thread_2 = spawn(move || {
+    //         for _ in 0..100000 {
+    //             let x = x_copy_2.get();
+    //             x_copy_2.set(x + 1);
+    //         }
+    //     });
+    //     thread_2.join().unwrap();
+    //     thread_1.join().unwrap();
+    //     //the threads starts to race, some of the modifications end up being lost
+    //     //both threads write before read again
+    //     //cargo t --lib bad_cell
+    //     assert_eq!(x.get(), 100000 * 2);
+    // }
 
     // #[test]
     // fn bad_2() {
